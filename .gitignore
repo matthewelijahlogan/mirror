@@ -1,0 +1,55 @@
+# Python
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+.Python
+build/
+develop-eggs/
+dist/
+downloads/
+eggs/
+.eggs/
+lib/
+lib64/
+parts/
+sdist/
+var/
+wheels/
+*.egg-info/
+.installed.cfg
+*.egg
+
+# Virtual environments
+venv/
+env/
+ENV/
+.venv
+
+# IDEs
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
+.DS_Store
+
+# Project-specific
+mirror.db
+mirror.db-journal
+mirror_memory.json
+quiz_results.json
+ml_training.json
+user_data.json
+.env
+.env.local
+
+# Cordova (if building)
+mirrorapp/
+
+# Node modules (if using npm/Cordova)
+node_modules/
+
+# OS
+Thumbs.db
+.DS_Store

@@ -1,0 +1,113 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>The Mirror Speaks</title>
+
+  <link rel="stylesheet" href="{{ url_for('static', path='/css/style.css') }}">
+  <link href="https://fonts.googleapis.com/css2?family=Great+Vibes&family=Cinzel:wght@400;600&display=swap" rel="stylesheet">
+</head>
+
+<body class="mirror-bg">
+
+  <div class="fortune-mirror">
+    <h1 class="mirror-header">Mirror... Mirror...</h1>
+
+    <div class="mirror-panel">
+      <div class="smoke primary" aria-hidden="true"></div>
+      <div class="smoke secondary" aria-hidden="true"></div>
+      <div class="particles" aria-hidden="true"></div>
+      
+      <div class="mirror-content">
+        <p class="fortune-text visible" id="fortuneText">{{ fortune }}</p>
+        <div id="fortune-actions" style="margin-top:12px; display:flex; gap:10px; justify-content:center;">
+          <a href="/quiz" class="button">Take Quiz Again</a>
+          <button id="fortune-retry" class="button" style="display:none;">Try Again</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    (function(){
+      const title = document.querySelector('.mirror-header');
+      const fortuneEl = document.getElementById('fortuneText');
+      const retryBtn = document.getElementById('fortune-retry');
+      const actions = document.getElementById('fortune-actions');
+
+      if (title) title.style.opacity = '1';
+
+      const defaultMsg = 'The mirror is quiet right now. Stand before it and speak your truth.';
+
+      function showRetry() {
+        if (retryBtn) retryBtn.style.display = 'inline-block';
+      }
+
+      function setFortune(text) {
+        fortuneEl.textContent = text || defaultMsg;
+        fortuneEl.classList.add('visible');
+      }
+
+      // 1) prefer localStorage if available
+      const local = localStorage.getItem('last_fortune');
+      if (local && local.trim()) {
+        setFortune(local);
+        return;
+      }
+
+      // 2) if server-side template provided a non-default fortune, keep it
+      const serverText = (fortuneEl.textContent || '').trim();
+      if (serverText && serverText !== defaultMsg) {
+        // keep server-supplied fortune
+        return;
+      }
+
+      // 3) try fetching fortune_data to get a fresh one
+      let fetched = false;
+      fetch('/fortune_data')
+        .then(r => r.json())
+        .then(js => {
+          if (js && js.fortune) {
+            localStorage.setItem('last_fortune', js.fortune);
+            setFortune(js.fortune);
+            fetched = true;
+          }
+        })
+        .catch(() => {
+          // ignore
+        })
+        .finally(() => {
+          if (!fetched) {
+            showRetry();
+          }
+        });
+
+      // retry button behavior: try again by reloading and forcing fetch
+      if (retryBtn) {
+        retryBtn.addEventListener('click', (e) => {
+          e.preventDefault();
+          retryBtn.disabled = true;
+          retryBtn.textContent = 'Trying...';
+          fetch('/fortune_data')
+            .then(r => r.json())
+            .then(js => {
+              if (js && js.fortune) {
+                localStorage.setItem('last_fortune', js.fortune);
+                setFortune(js.fortune);
+                retryBtn.style.display = 'none';
+              } else {
+                retryBtn.textContent = 'Try Again';
+                retryBtn.disabled = false;
+              }
+            })
+            .catch(() => {
+              retryBtn.textContent = 'Try Again';
+              retryBtn.disabled = false;
+            });
+        });
+      }
+    })();
+  </script>
+
+</body>
+</html>

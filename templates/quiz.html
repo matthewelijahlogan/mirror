@@ -1,0 +1,71 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Mirror Mirror Quiz</title>
+  <link rel="stylesheet" href="/static/css/style.css">
+</head>
+<body class="mirror-bg quiz-mode">
+  <div class="fortune-box">
+    <div id="mirrorTitle" class="show">Mirror Mirror Quiz</div>
+    <div id="mirrorTitle2" class="show">Discover your fortune and cosmic insight</div>
+
+    <div class="mirror-panel">
+      <div class="mirror-content">
+        <main style="width:100%;max-width:900px;display:flex;flex-direction:column;gap:20px;">
+          <form id="quiz-form" style="width:100%;display:flex;flex-direction:column;gap:14px;">
+            <div id="quiz-questions" aria-live="polite">
+              <!-- Questions will be dynamically loaded here by static/js/quiz.js -->
+            </div>
+
+            <div class="user-info" style="width:100%;display:flex;flex-direction:column;gap:8px;margin-top:12px;">
+              <label for="name">Your Name:</label>
+              <input type="text" id="name" name="name" placeholder="Enter your name" required>
+
+              <label for="birthdate">Birthdate:</label>
+              <input type="date" id="birthdate" name="birthdate" required>
+            </div>
+
+            <div style="margin-top:20px;display:flex;gap:10px;align-items:center;justify-content:center;">
+              <button type="submit" class="button">Reveal My Reflection</button>
+            </div>
+          </form>
+
+          <section id="fortune-section" class="hidden" style="margin-top:18px;">
+            <h2>Your Fortune</h2>
+            <div id="fortune-text" class="fortune-text" data-reflection=""></div>
+            <div style="margin-top:12px;">
+              <button id="reset-btn" class="button">Take Quiz Again</button>
+            </div>
+          </section>
+        </main>
+      </div>
+      <div class="smoke" aria-hidden="true"></div>
+    </div>
+  </div>
+
+  <script src="/static/js/quiz.js"></script>
+  <script>
+    // small helper: show fortune section if a last fortune exists
+    (function(){
+      const last = localStorage.getItem("last_fortune");
+      if(last){
+        const fs = document.getElementById('fortune-section');
+        const ft = document.getElementById('fortune-text');
+        if(fs && ft){
+          ft.textContent = last;
+          ft.classList.add('visible');
+          fs.classList.remove('hidden');
+        }
+      }
+      const reset = document.getElementById('reset-btn');
+      if(reset) reset.addEventListener('click', () => {
+        localStorage.removeItem('last_fortune');
+        document.getElementById('fortune-section').classList.add('hidden');
+        window.location.href = '/';
+      });
+    })();
+  </script>
+</body>
+</html>

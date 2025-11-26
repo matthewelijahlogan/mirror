@@ -1,0 +1,10 @@
+# Mirror Mirror — dependencies
+
+fastapi
+uvicorn[standard]
+jinja2
+python-multipart
+starlette
+pydantic
+watchdog
+httpx
