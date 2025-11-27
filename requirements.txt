@@ -8,3 +8,4 @@ starlette
 pydantic
 watchdog
 httpx
+itsdangerous
