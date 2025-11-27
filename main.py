@@ -23,6 +23,7 @@ from fastapi.responses import HTMLResponse, JSONResponse, PlainTextResponse
 from fastapi.staticfiles import StaticFiles
 from fastapi.templating import Jinja2Templates
 from starlette.middleware.sessions import SessionMiddleware
+from fastapi.middleware.cors import CORSMiddleware
 
 # Existing imports preserved
 # fortune_engine must expose generate_fortune and get_user_history
@@ -40,12 +41,41 @@ TEMPLATES_DIR = os.path.join(BASE_DIR, "templates")
 STATIC_DIR = os.path.join(BASE_DIR, "static")
 QUESTION_FILE = os.path.join(BASE_DIR, "question.json")  # used as fallback if /static/data/question.json exists
 SECRET_KEY = os.environ.get("MIRROR_SECRET_KEY", "supersecretmirrorkey")
-HOST = "127.0.0.1"
-PORT = 8000
+# Allow overriding host/port via environment for easier device testing and cloud deployment
+# Render.com and similar platforms set $PORT automatically
+HOST = os.environ.get("MIRROR_HOST", "0.0.0.0")
+PORT = int(os.environ.get("PORT") or os.environ.get("MIRROR_PORT") or "8000")
 
 # FastAPI app + static + templates
 app = FastAPI(title="Mirror Mirror Backend", debug=False)
 app.add_middleware(SessionMiddleware, secret_key=SECRET_KEY)
+
+# CORS configuration: control via `ALLOWED_ORIGINS` (comma-separated) or
+# enable permissive mode with `MIRROR_ALLOW_ALL_ORIGINS=true` for quick testing.
+ALLOW_ALL_ORIGINS = os.environ.get("MIRROR_ALLOW_ALL_ORIGINS", "false").lower() in ("1", "true", "yes")
+allowed_env = os.environ.get("ALLOWED_ORIGINS")
+if ALLOW_ALL_ORIGINS:
+    app.add_middleware(
+        CORSMiddleware,
+        allow_origins=["*"],
+        allow_credentials=True,
+        allow_methods=["*"],
+        allow_headers=["*"],
+    )
+else:
+    if allowed_env:
+        origins = [o.strip() for o in allowed_env.split(",") if o.strip()]
+    else:
+        # sensible dev defaults; add your app origin(s) via ALLOWED_ORIGINS
+        origins = ["http://localhost:8000", "http://127.0.0.1:8000"]
+    app.add_middleware(
+        CORSMiddleware,
+        allow_origins=origins,
+        allow_credentials=True,
+        allow_methods=["*"],
+        allow_headers=["*"],
+    )
+    print(f"[main] CORS allowed origins: {origins}")
 
 # Defensive: ensure static dir exists
 if not os.path.isdir(STATIC_DIR):

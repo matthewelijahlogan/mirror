@@ -1,0 +1,17 @@
+[ 
+  { "id": 1, "category": "emotion", "text": "When faced with chaos, do you find calm or more energy?" },
+  { "id": 2, "category": "emotion", "text": "Do surprises make you nervous or excited?" },
+  { "id": 3, "category": "emotion", "text": "How do you feel about change?" },
+  { "id": 4, "category": "focus", "text": "Do you finish what you start?" },
+  { "id": 5, "category": "focus", "text": "How do you handle long projects?" },
+  { "id": 6, "category": "focus", "text": "Do deadlines motivate you or drain you?" },
+  { "id": 7, "category": "intuition", "text": "Do you go with your gut or analyze?" },
+  { "id": 8, "category": "intuition", "text": "When uncertain, do you trust instincts or logic?" },
+  { "id": 9, "category": "intuition", "text": "Do you make quick or deliberate choices?" },
+  { "id": 10, "category": "trust", "text": "Do you assume the best in others?" },
+  { "id": 11, "category": "trust", "text": "Are you cautious when meeting new people?" },
+  { "id": 12, "category": "trust", "text": "Do you believe most people mean well?" },
+  { "id": 13, "category": "reflection", "text": "Do you often replay past choices?" },
+  { "id": 14, "category": "reflection", "text": "How often do you reflect on mistakes?" },
+  { "id": 15, "category": "reflection", "text": "Do you feel nostalgia or regret more often?" }
+]
